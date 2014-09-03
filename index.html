@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <link data-require="bootstrap-css@*" data-semver="3.2.0" rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" />
+    <script data-require="angular.js@*" data-semver="1.3.0-beta.5" src="https://code.angularjs.org/1.3.0-beta.5/angular.js"></script>
+    <script data-require="angular-ui-bootstrap@*" data-semver="0.11.0" src="http://angular-ui.github.io/bootstrap/ui-bootstrap-tpls-0.11.0.min.js"></script>
+    <link rel="stylesheet" href="style.css" />
+    <script src="script.js"></script>
+    <script>
+      var Controller1 = function($scope, $http) {
+        $scope.increment = 1;
+        $scope.price = 13;
+        $scope.technologies = [
+          { name: 'Angular' },
+          { name: 'Bootstrap' },
+          { name: '3D printing' },
+        ];
+        $scope.addAnItemToTheList = function(value) {
+          $scope.technologies.push({
+            name: value,
+          });
+          $scope.thingToAdd = '';
+        }
+        $scope.addOne = function(increment) {
+          $scope.price += parseInt(increment);
+        };
+        $scope.subtractOne = function(increment) {
+          $scope.price -= parseInt(increment);
+        };
+        
+        $scope.releases = [];
+        console.log('one');
+        $http.get('http://registry.npmjs.org/auth-proxy')
+          .success(function(data) {
+            console.log('two');
+            $scope.releases = data.versions;
+            
+          })
+          .error(function() {
+            console.log(arguments);
+            console.log('two');
+          });
+          
+          console.log('three');
+      }
+    </script>
+  </head>
+
+  <body>
+  
+    <div ng-app ng-controller="Controller1">
+      <div>
+        <h1 ng-show="price > 35">Oh snap!!!! You're breaking the bank!!!</h1>
+      </div>
+      <div ng-hide="price > 35">
+        <h1>Hello Plunker {{ price | currency }}!</h1>
+      </div>
+      <input ng-model="increment" />
+      <button ng-click="subtractOne(increment)">Subtract {{ increment | currency }}</button>
+      <button ng-click="addOne(increment)">Add {{ increment | currency }}</button>
+      <ul>
+        <li ng-repeat="technology in technologies">{{technology.name}}</li>
+      </ul>
+      <input ng-model="thingToAdd" />
+      <button ng-click="addAnItemToTheList(thingToAdd)" ng-model="thingToAdd">Add</button>
+      <ul>
+          <li ng-repeat="release in releases">{{release.name + ' ' + release.version}}</li>
+        </ul>
+    </div>
+  </body>
+
+</html>
